@@ -5,10 +5,11 @@ import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import DomainList from "@/components/DomainList";
 import DomainForm from "@/components/DomainForm";
-import { Plus } from "lucide-react";
+import { Plus, Search as SearchIcon } from "lucide-react";
 
 const Index = () => {
   const [domains, setDomains] = useState<Domain[]>([]);
+  const [allDomains, setAllDomains] = useState<Domain[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,8 +73,9 @@ const Index = () => {
     setIsLoading(true);
     // In a real app, this would be an API call
     setTimeout(() => {
-      const allDomains = getDomains();
-      setDomains(allDomains);
+      const fetchedDomains = getDomains();
+      setDomains(fetchedDomains);
+      setAllDomains(fetchedDomains);
       setIsLoading(false);
     }, 300);
   };
@@ -81,7 +83,7 @@ const Index = () => {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim() === "") {
-      loadDomains();
+      setDomains(allDomains);
     } else {
       const results = searchDomains(query);
       setDomains(results);
@@ -90,6 +92,12 @@ const Index = () => {
 
   const handleAdd = () => {
     loadDomains();
+  };
+  
+  const handleSelectSuggestion = (domain: Domain) => {
+    // When a suggestion is selected, set it as the only result
+    setDomains([domain]);
+    setSearchQuery(domain.domain);
   };
 
   return (
@@ -110,7 +118,12 @@ const Index = () => {
           </p>
 
           <div className="max-w-2xl mx-auto mb-12">
-            <SearchBar onSearch={handleSearch} currentPlaceholder={placeholders[currentPlaceholderIndex]} />
+            <SearchBar 
+              onSearch={handleSearch} 
+              currentPlaceholder={placeholders[currentPlaceholderIndex]}
+              domains={allDomains}
+              onSelectSuggestion={handleSelectSuggestion}
+            />
           </div>
 
           <button

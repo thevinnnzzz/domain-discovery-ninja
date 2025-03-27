@@ -1,6 +1,8 @@
 
 import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getDomains, Domain } from "@/lib/db";
+import SearchBar from "@/components/SearchBar";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -8,21 +10,23 @@ interface HeaderProps {
 
 const Header = ({ onSearch }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [domains, setDomains] = useState<Domain[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
+    // Load domains for search suggestions
+    const loadDomains = () => {
+      const allDomains = getDomains();
+      setDomains(allDomains);
+    };
+
+    loadDomains();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchQuery);
-  };
 
   return (
     <header
@@ -43,24 +47,14 @@ const Header = ({ onSearch }: HeaderProps) => {
             </a>
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="relative w-full max-w-md mx-4 hidden sm:block"
-          >
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <input
-                type="text"
-                placeholder="Search domains or descriptions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 pl-10 pr-4 rounded-full glass-input text-sm"
-              />
-            </div>
-          </form>
+          <div className="relative w-full max-w-md mx-4 hidden sm:block">
+            <SearchBar 
+              onSearch={onSearch}
+              className="w-full"
+              currentPlaceholder="Search domains or descriptions..."
+              domains={domains}
+            />
+          </div>
 
           <div className="flex items-center">
             <button className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 cta-button">

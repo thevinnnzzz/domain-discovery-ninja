@@ -1,5 +1,6 @@
 
 import { generateId } from './utils';
+import { smartSearch } from './smartSearch';
 
 export interface Domain {
   id: string;
@@ -54,20 +55,15 @@ export function deleteDomain(id: string): void {
 }
 
 /**
- * Searches domains based on a query
+ * Searches domains based on a query using smart search
  */
 export function searchDomains(query: string): Domain[] {
   if (!query) return getDomains();
   
   const domains = getDomains();
-  const lowerQuery = query.toLowerCase();
   
-  return domains.filter(domain => {
-    return (
-      domain.domain.toLowerCase().includes(lowerQuery) ||
-      domain.description.toLowerCase().includes(lowerQuery)
-    );
-  });
+  // Use the smartSearch function for intelligent searching
+  return smartSearch(domains, query);
 }
 
 /**
