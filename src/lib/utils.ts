@@ -63,3 +63,27 @@ export function getFavicon(domain: string): string {
 export function generateId(): string {
   return Math.random().toString(36).substring(2, 9);
 }
+
+/**
+ * Adds a staggered animation to items based on their index
+ */
+export function getStaggeredDelay(index: number): string {
+  const baseDelay = 0.1;
+  const delay = baseDelay + (index * 0.05);
+  return `${delay}s`;
+}
+
+/**
+ * Generates a random gradient for text or backgrounds
+ */
+export function getRandomGradient(): string {
+  const gradients = [
+    'linear-gradient(90deg, #4776E6 0%, #8E54E9 100%)',
+    'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    'linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
+    'linear-gradient(90deg, #FEE140 0%, #FA709A 100%)',
+    'linear-gradient(90deg, #667EEA 0%, #764BA2 100%)',
+  ];
+  
+  return gradients[Math.floor(Math.random() * gradients.length)];
+}

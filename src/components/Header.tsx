@@ -36,8 +36,9 @@ const Header = ({ onSearch }: HeaderProps) => {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <a href="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                Domain Discovery
+              <span className="text-2xl font-semibold animate-logo-text">
+                <span className="vincent-text">Vincent</span>
+                <span className="vault-text">Vault</span>
               </span>
             </a>
           </div>
@@ -62,7 +63,7 @@ const Header = ({ onSearch }: HeaderProps) => {
           </form>
 
           <div className="flex items-center">
-            <button className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2">
+            <button className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 cta-button">
               Add Domain
             </button>
           </div>

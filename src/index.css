@@ -142,3 +142,210 @@
 .text-balance {
   text-wrap: balance;
 }
+
+/* Logo text animations */
+.logo-text {
+  display: inline-block;
+  animation: scale-up 1s ease-out forwards;
+  position: relative;
+}
+
+@keyframes scale-up {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.vincent-text {
+  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(142, 84, 233, 0.3);
+  transition: all 0.3s ease;
+}
+
+.vault-text {
+  background: linear-gradient(90deg, #8E54E9 0%, #4776E6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  margin-left: 3px;
+  text-shadow: 0 0 8px rgba(71, 118, 230, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Glitch effect */
+.glitch-effect {
+  position: relative;
+}
+
+.glitch-effect:hover {
+  animation: glitch 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    text-shadow: 0 0 8px rgba(71, 118, 230, 0.3);
+  }
+  25% {
+    transform: translate(-2px, 1px);
+    text-shadow: -2px 1px 0 rgba(255, 0, 0, 0.2), 1px -1px 0 rgba(0, 255, 0, 0.2);
+  }
+  50% {
+    transform: translate(1px, -1px);
+    text-shadow: 2px -1px 0 rgba(0, 0, 255, 0.2), -1px 1px 0 rgba(255, 0, 0, 0.2);
+  }
+  75% {
+    transform: translate(-1px, -1px);
+    text-shadow: -1px 0 0 rgba(0, 255, 0, 0.2), 1px 1px 0 rgba(0, 0, 255, 0.2);
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: 0 0 8px rgba(71, 118, 230, 0.3);
+  }
+}
+
+/* Typewriter text effect */
+.dynamic-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+}
+
+.typewriter-text {
+  display: inline-block;
+  color: #4776E6;
+  font-weight: 500;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  color: #8E54E9;
+  font-weight: 700;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Search bar placeholder animation */
+.animated-placeholder {
+  transition: all 0.3s ease;
+}
+
+.animated-placeholder::placeholder {
+  transition: opacity 0.8s ease;
+  animation: placeholder-fade 3s infinite;
+}
+
+@keyframes placeholder-fade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* CTA Button animations */
+.cta-button {
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 14px rgba(71, 118, 230, 0.2);
+}
+
+.cta-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.cta-button:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Scrolling animations */
+.animate-fade-in {
+  opacity: 0;
+  animation: fade-in 1s ease forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply staggered animations to search results */
+.staggered-item {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.staggered-item:nth-child(1) { animation: stagger-in 0.5s 0.1s ease forwards; }
+.staggered-item:nth-child(2) { animation: stagger-in 0.5s 0.2s ease forwards; }
+.staggered-item:nth-child(3) { animation: stagger-in 0.5s 0.3s ease forwards; }
+.staggered-item:nth-child(4) { animation: stagger-in 0.5s 0.4s ease forwards; }
+.staggered-item:nth-child(5) { animation: stagger-in 0.5s 0.5s ease forwards; }
+.staggered-item:nth-child(n+6) { animation: stagger-in 0.5s 0.6s ease forwards; }
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover animation for links with gradient effect */
+a:hover .vincent-text,
+a:hover .vault-text {
+  background-size: 200% 100%;
+  background-position: right center;
+  text-shadow: 0 0 15px rgba(142, 84, 233, 0.5);
+}
+
+/* Animation for the logo in the header */
+.animate-logo-text {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.animate-logo-text:hover {
+  transform: scale(1.05);
+}
+
+/* Animate scale in */
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

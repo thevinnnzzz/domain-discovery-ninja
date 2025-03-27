@@ -5,9 +5,10 @@ import { Search } from "lucide-react";
 interface SearchBarProps {
   onSearch: (query: string) => void;
   className?: string;
+  currentPlaceholder?: string;
 }
 
-const SearchBar = ({ onSearch, className = "" }: SearchBarProps) => {
+const SearchBar = ({ onSearch, className = "", currentPlaceholder = "Search for tools, websites, or functionality..." }: SearchBarProps) => {
   const [query, setQuery] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   
@@ -52,10 +53,10 @@ const SearchBar = ({ onSearch, className = "" }: SearchBarProps) => {
           />
           <input
             type="text"
-            placeholder="Search for tools, websites, or functionality..."
+            placeholder={currentPlaceholder}
             value={query}
             onChange={handleChange}
-            className="w-full py-3 pl-12 pr-4 glass-input rounded-2xl text-base shadow-sm transition-all duration-300 focus:shadow-md"
+            className="w-full py-3 pl-12 pr-4 glass-input rounded-2xl text-base shadow-sm transition-all duration-300 focus:shadow-md animated-placeholder"
           />
         </div>
       </form>
