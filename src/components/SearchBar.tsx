@@ -23,6 +23,7 @@ const SearchBar = ({
   const [isTyping, setIsTyping] = useState(false);
   const [suggestions, setSuggestions] = useState<Domain[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
   const suggestionRef = useRef<HTMLDivElement>(null);
   
   // Close suggestions when clicking outside
@@ -41,7 +42,7 @@ const SearchBar = ({
   
   // Update suggestions as user types
   useEffect(() => {
-    if (query.trim().length > 1 && domains.length > 0) {
+    if (query.trim().length > 1 && domains.length > 0 && !searchSubmitted) {
       const newSuggestions = getSuggestions(domains, query);
       setSuggestions(newSuggestions);
       setShowSuggestions(newSuggestions.length > 0);
@@ -49,10 +50,13 @@ const SearchBar = ({
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [query, domains]);
+  }, [query, domains, searchSubmitted]);
   
   // Handle debounced search
   useEffect(() => {
+    // Don't trigger search if it was submitted via Enter key
+    if (searchSubmitted) return;
+    
     const delayDebounceFn = setTimeout(() => {
       if (query !== "") {
         onSearch(query);
@@ -61,11 +65,12 @@ const SearchBar = ({
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query, onSearch]);
+  }, [query, onSearch, searchSubmitted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setIsTyping(true);
+    setSearchSubmitted(false);
     
     // If query is empty, immediately search to show all results
     if (e.target.value === "") {
@@ -77,9 +82,12 @@ const SearchBar = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(query);
-    setIsTyping(false);
-    setShowSuggestions(false);
+    if (query.trim() !== "") {
+      onSearch(query);
+      setIsTyping(false);
+      setShowSuggestions(false);
+      setSearchSubmitted(true);
+    }
   };
   
   const handleSuggestionClick = (domain: Domain) => {
@@ -91,6 +99,7 @@ const SearchBar = ({
       onSearch(domain.domain);
     }
     setShowSuggestions(false);
+    setSearchSubmitted(true);
   };
 
   return (
@@ -109,7 +118,7 @@ const SearchBar = ({
             value={query}
             onChange={handleChange}
             className="w-full py-3 pl-12 pr-4 glass-input rounded-2xl text-base shadow-sm transition-all duration-300 focus:shadow-md animated-placeholder"
-            onFocus={() => query.trim().length > 1 && suggestions.length > 0 && setShowSuggestions(true)}
+            onFocus={() => query.trim().length > 1 && suggestions.length > 0 && !searchSubmitted && setShowSuggestions(true)}
           />
         </div>
         

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { getDomains, searchDomains, aiSearchDomains, Domain } from "@/lib/db";
 import Header from "@/components/Header";
@@ -17,6 +16,7 @@ const Index = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [typedText, setTypedText] = useState("");
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
+  const [isSearchSubmitted, setIsSearchSubmitted] = useState(false);
 
   const phrases = ["Store.", "Search.", "Discover Domains."];
   const placeholders = [
@@ -84,6 +84,7 @@ const Index = () => {
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
+    setIsSearchSubmitted(true);
     
     if (query.trim() === "") {
       setDomains(allDomains);
@@ -95,7 +96,7 @@ const Index = () => {
     setDomains(quickResults);
     
     // Then perform AI-powered search if query is complex enough
-    if (query.length > 3) {
+    if (query.length > 3 && !isSearchSubmitted) {
       setIsSearching(true);
       try {
         const aiResults = await aiSearchDomains(query);
@@ -127,6 +128,7 @@ const Index = () => {
     // When a suggestion is selected, set it as the only result
     setDomains([domain]);
     setSearchQuery(domain.domain);
+    setIsSearchSubmitted(true);
   };
 
   return (
