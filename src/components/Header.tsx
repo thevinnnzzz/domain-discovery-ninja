@@ -51,13 +51,16 @@ const Header = ({ onSearch }: HeaderProps) => {
             <SearchBar 
               onSearch={onSearch}
               className="w-full"
-              currentPlaceholder="Search domains or descriptions..."
+              currentPlaceholder="Search using AI-powered smart search..."
               domains={domains}
             />
           </div>
 
           <div className="flex items-center">
-            <button className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 cta-button">
+            <button 
+              onClick={() => document.dispatchEvent(new CustomEvent('open-domain-form'))}
+              className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 cta-button"
+            >
               Add Domain
             </button>
           </div>

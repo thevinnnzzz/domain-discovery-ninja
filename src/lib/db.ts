@@ -1,6 +1,7 @@
 
 import { generateId } from './utils';
 import { smartSearch } from './smartSearch';
+import { enhanceSearchQuery, findRelevantDomains } from './openaiService';
 
 export interface Domain {
   id: string;
@@ -64,6 +65,48 @@ export function searchDomains(query: string): Domain[] {
   
   // Use the smartSearch function for intelligent searching
   return smartSearch(domains, query);
+}
+
+/**
+ * Searches domains based on a query using ChatGPT-powered search
+ */
+export async function aiSearchDomains(query: string): Promise<Domain[]> {
+  if (!query) return getDomains();
+  
+  const domains = getDomains();
+  if (domains.length === 0) return [];
+  
+  try {
+    // Get domain descriptions for context
+    const descriptions = domains.map(d => d.description);
+    
+    // First approach: Enhance the search query with AI-generated terms
+    const enhancedTerms = await enhanceSearchQuery(query, descriptions);
+    let results = smartSearch(domains, enhancedTerms.join(' '));
+    
+    // If no results or very few, try the second approach
+    if (results.length < 2) {
+      // Second approach: Get AI to directly analyze and find relevant domains
+      const relevantDomainIds = await findRelevantDomains(query, domains);
+      
+      // Map IDs back to domain objects
+      const aiResults = relevantDomainIds
+        .map(id => domains.find(d => d.id === id))
+        .filter(Boolean) as Domain[];
+      
+      // Combine results, removing duplicates
+      const combinedIds = new Set([...results.map(d => d.id), ...aiResults.map(d => d.id)]);
+      results = Array.from(combinedIds)
+        .map(id => domains.find(d => d.id === id))
+        .filter(Boolean) as Domain[];
+    }
+    
+    return results;
+  } catch (error) {
+    console.error('Error in AI search:', error);
+    // Fallback to regular smart search
+    return smartSearch(domains, query);
+  }
 }
 
 /**

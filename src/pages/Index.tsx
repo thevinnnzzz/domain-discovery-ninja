@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from "react";
-import { getDomains, searchDomains, Domain } from "@/lib/db";
+import { getDomains, searchDomains, aiSearchDomains, Domain } from "@/lib/db";
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import DomainList from "@/components/DomainList";
 import DomainForm from "@/components/DomainForm";
 import { Plus, Search as SearchIcon } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [domains, setDomains] = useState<Domain[]>([]);
@@ -13,6 +14,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [typedText, setTypedText] = useState("");
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
 
@@ -80,13 +82,40 @@ const Index = () => {
     }, 300);
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchQuery(query);
+    
     if (query.trim() === "") {
       setDomains(allDomains);
-    } else {
-      const results = searchDomains(query);
-      setDomains(results);
+      return;
+    }
+    
+    // Start with regular search to show immediate results
+    const quickResults = searchDomains(query);
+    setDomains(quickResults);
+    
+    // Then perform AI-powered search if query is complex enough
+    if (query.length > 3) {
+      setIsSearching(true);
+      try {
+        const aiResults = await aiSearchDomains(query);
+        
+        if (aiResults.length > 0) {
+          setDomains(aiResults);
+          if (aiResults.length > quickResults.length) {
+            toast({
+              title: "AI-powered search",
+              description: `Found ${aiResults.length} relevant domains`,
+              duration: 3000,
+            });
+          }
+        }
+      } catch (error) {
+        console.error("AI search error:", error);
+        // Already showing quick results as fallback
+      } finally {
+        setIsSearching(false);
+      }
     }
   };
 
@@ -140,6 +169,20 @@ const Index = () => {
                 <div className="w-12 h-12 rounded-full border-2 border-transparent border-t-primary animate-spin mb-4"></div>
                 <p className="text-gray-500">Loading domains...</p>
               </div>
+            </div>
+          ) : isSearching ? (
+            <div className="py-6">
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-transparent border-t-primary animate-spin mb-2"></div>
+                <p className="text-sm text-gray-500">Searching with AI...</p>
+              </div>
+              
+              {/* Show initial results while AI is thinking */}
+              <DomainList
+                domains={domains}
+                searchQuery={searchQuery}
+                onUpdate={loadDomains}
+              />
             </div>
           ) : (
             <DomainList
